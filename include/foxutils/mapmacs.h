@@ -1,6 +1,11 @@
 /**
  * @file
  *
+ * @copyright Copyright 2020 Garrett Russell Fairburn
+ * 
+ * @copyright This file is part of the libfoxutils C library which is released
+ * under Apache 2.0. See file LICENSE for full license details.
+ *
  * @brief This module abstracts foxutils/map.h.
  */
 #ifndef FOXUTILS_MAPMACS_H

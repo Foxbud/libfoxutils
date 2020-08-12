@@ -1,3 +1,9 @@
+/*
+ * Copyright 2020 Garrett Russell Fairburn
+ * 
+ * This file is part of the libfoxutils C library which is released
+ * under Apache 2.0. See file LICENSE for full license details.
+ */
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
