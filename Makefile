@@ -19,10 +19,11 @@ libdir = $(exec_prefix)/lib
 includedir = $(prefix)/include
 
 # Library names.
-dlibnamev0 = libfoxutils.so
+libname = foxutils
+dlibnamev0 = lib$(libname).so
 dlibnamev1 = $(dlibnamev0).1
 dlibnamev3 = $(dlibnamev1).0.0dev
-slibname = $(subst .so,.a,$(dlibnamev0))
+slibname = lib$(libname).a
 
 # Build files.
 src = $(wildcard $(srcdir)/*.c) $(wildcard $(srcdir)/foxutils/*.c)
@@ -35,7 +36,7 @@ slib = $(builddir)/$(slibname)
 # Program and flag defaults.
 CFLAGS = -Wall -Wextra -O3
 ALL_CFLAGS = -I$(incdir) $(CFLAGS)
-ALL_LDFLAGS = $(LDFLAGS)
+ALL_LDFLAGS = -shared -soname=$(dlibnamev1) $(LDFLAGS)
 ARFLAGS = -crs
 ALL_ARFLAGS = $(ARFLAGS)
 DOC = doxygen
@@ -48,7 +49,7 @@ lib: dlib slib
 
 $(dlib): $(obj)
 	mkdir -p $(builddir)
-	$(LD) -shared -soname=$(dlibnamev1) $(ALL_LDFLAGS) -o $@ $(obj)
+	$(LD) $(ALL_LDFLAGS) -o $@ $(obj)
 
 $(slib): $(obj)
 	mkdir -p $(builddir)
