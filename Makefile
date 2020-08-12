@@ -21,7 +21,7 @@ includedir = $(prefix)/include
 # Library names.
 dlibnamev0 = libfoxutils.so
 dlibnamev1 = $(dlibnamev0).1
-dlibnamev3 = $(dlibnamev1).0.0
+dlibnamev3 = $(dlibnamev1).0.0dev
 slibname = $(subst .so,.a,$(dlibnamev0))
 
 # Build files.
