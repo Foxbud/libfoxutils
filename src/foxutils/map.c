@@ -74,8 +74,8 @@ static inline unsigned long RoundUpPowTwo(unsigned long val) {
 	return result + 1;
 }
 
-static inline float LoadFactor(Map * map) {
-	return (float)FoxArraySize(&map->items)
+static inline float LoadFactor(Map * map, int itemAddend) {
+	return (float)(FoxArraySize(&map->items) + itemAddend)
 		/ (float)FoxArraySize(&map->slots);
 }
 
@@ -282,6 +282,12 @@ void * FoxMapInsert(
 	assert(map);
 	assert(key);
 
+	/* Expand map if necessary. */
+	float lfThresh = map->lfThresh;
+	if (lfThresh > 0.0f && LoadFactor(map, 1) >= lfThresh) {
+		FoxMapExpand((FoxMap *)map);
+	}
+
 	/* Lookup slot. */
 	unsigned int slotIdx;
 	assert(!ItemLookup(map, key, &slotIdx, NULL, NULL));
@@ -311,12 +317,6 @@ void * FoxMapInsert(
 
 	/* Initialize target element. */
 	memset(item->elem, 0, map->elemSize);
-
-	/* Expand map if necessary. */
-	float lfThresh = map->lfThresh;
-	if (lfThresh > 0.0f && LoadFactor(map) >= lfThresh) {
-		FoxMapExpand((FoxMap *)map);
-	}
 
 	return item->elem;
 #undef map
@@ -385,7 +385,7 @@ void FoxMapRemove(
 }
 
 float FoxMapLoadFactor(FoxMap * map) {
-	return LoadFactor((Map *)map);
+	return LoadFactor((Map *)map, 0);
 }
 
 void FoxMapExpand(FoxMap * map) {
