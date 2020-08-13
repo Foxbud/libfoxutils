@@ -18,8 +18,9 @@ exec_prefix = $(prefix)
 libdir = $(exec_prefix)/lib
 includedir = $(prefix)/include
 
-# Library names.
-libname = foxutils
+# Names.
+librootname = foxutils
+libname = $(librootname)
 dlibnamev0 = lib$(libname).so
 dlibnamev1 = $(dlibnamev0).1
 dlibnamev3 = $(dlibnamev1).0.0dev
@@ -44,8 +45,8 @@ INSTALL = install
 
 
 
-.PHONY: lib
-lib: dlib slib
+.PHONY: libs
+libs: dlib slib
 
 $(dlib): $(obj)
 	mkdir -p $(builddir)
@@ -78,20 +79,34 @@ clean:
 	rm -rf $(obj) $(builddir) $(docdir)
 
 .PHONY: install
-install: lib $(pubinc)
-	$(NORMAL_INSTALL)
+install: install-symlinks install-headers
+
+.PHONY: install-libs
+install-libs: libs
 	$(INSTALL) -Dt $(DESTDIR)$(libdir) $(dlib)
 	$(INSTALL) -Dt $(DESTDIR)$(libdir) -m 644 $(slib)
-	$(INSTALL) -Dt $(DESTDIR)$(includedir)/foxutils -m 644 $(pubinc)
-	$(POST_INSTALL)
+
+.PHONY: install-symlinks
+install-symlinks: install-libs
 	ln -srf $(DESTDIR)$(libdir)/$(dlibnamev3) $(DESTDIR)$(libdir)/$(dlibnamev1)
 	ln -srf $(DESTDIR)$(libdir)/$(dlibnamev3) $(DESTDIR)$(libdir)/$(dlibnamev0)
 
+.PHONY: install-headers
+install-headers: $(pubinc)
+	$(INSTALL) -Dt $(DESTDIR)$(includedir)/$(librootname) -m 644 $(pubinc)
+
 .PHONY: uninstall
-uninstall:
-	$(PRE_UNINSTALL)
-	rm $(DESTDIR)$(libdir)/$(dlibnamev0) $(DESTDIR)$(libdir)/$(dlibnamev1)
-	$(NORMAL_UNINSTALL)
-	rm -r $(DESTDIR)$(includedir)/foxutils
-	rm $(DESTDIR)$(libdir)/$(slibname)
-	rm $(DESTDIR)$(libdir)/$(dlibnamev3)
+uninstall: uninstall-libs uninstall-headers
+
+.PHONY: uninstall-libs
+uninstall-libs: uninstall-symlinks
+	rm -f $(DESTDIR)$(libdir)/$(slibname)
+	rm -f $(DESTDIR)$(libdir)/$(dlibnamev3)
+
+.PHONY: uninstall-symlinks
+uninstall-symlinks:
+	rm -f $(DESTDIR)$(libdir)/$(dlibnamev0) $(DESTDIR)$(libdir)/$(dlibnamev1)
+
+.PHONY: uninstall-headers
+uninstall-headers:
+	rm -rf $(DESTDIR)$(includedir)/$(librootname)
