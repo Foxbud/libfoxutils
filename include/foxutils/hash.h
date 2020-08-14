@@ -6,7 +6,7 @@
  * @copyright This file is part of the libfoxutils C library which is released
  * under Apache 2.0. See file LICENSE for full license details.
  *
- * @brief This module provides hash functions suitable for hash tables.
+ * @brief Non-cryptographically secure hashing functions.
  *
  * @warning None of the functions in this module are crytographically secure.
  */

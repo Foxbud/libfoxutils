@@ -6,7 +6,7 @@
  * @copyright This file is part of the libfoxutils C library which is released
  * under Apache 2.0. See file LICENSE for full license details.
  *
- * @brief This module abstracts foxutils/array.h.
+ * @brief Convenience macros for foxutils/array.h.
  */
 #ifndef FOXUTILS_ARRAYMACS_H
 #define FOXUTILS_ARRAYMACS_H
@@ -18,10 +18,10 @@
 /* ----- PUBLIC MACROS ----- */
 
 #define FoxArrayMNew(T) \
-	FoxArrayNew(sizeof(T), 0, 0.0f)
+	FoxArrayNew(sizeof(T), FOXARRAY_DEF_INITCAP, FOXARRAY_DEF_GROWRATE)
 
 #define FoxArrayMNewExt(T, initCap) \
-	FoxArrayNew(sizeof(T), (initCap), 0.0f)
+	FoxArrayNew(sizeof(T), (initCap), FOXARRAY_DEF_GROWRATE)
 
 #define FoxArrayMNewAdv(T, initCap, growRate) \
 	FoxArrayNew(sizeof(T), (initCap), (growRate))
@@ -33,10 +33,10 @@
 	} while (0)
 
 #define FoxArrayMInit(T, array) \
-	FoxArrayInit((array), sizeof(T), 0, 0.0f)
+	FoxArrayInit((array), sizeof(T), FOXARRAY_DEF_INITCAP, FOXARRAY_DEF_GROWRATE)
 
 #define FoxArrayMInitExt(T, array, initCap) \
-	FoxArrayInit((array), sizeof(T), (initCap), 0.0f)
+	FoxArrayInit((array), sizeof(T), (initCap), FOXARRAY_DEF_GROWRATE)
 
 #define FoxArrayMInitAdv(T, array, initCap, growRate) \
 	FoxArrayInit((array), sizeof(T), (initCap), (growRate))

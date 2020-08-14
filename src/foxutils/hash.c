@@ -5,8 +5,9 @@
  * under Apache 2.0. See file LICENSE for full license details.
  */
 #include <assert.h>
+
 #include "foxutils/hash.h"
-#include "xorshift.h"
+#include "private/xorshift.h"
 
 
 

@@ -7,27 +7,8 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
+
 #include "foxutils/array.h"
-
-
-
-/* ----- PRIVATE TYPES ----- */
-
-typedef struct Array {
-	unsigned char * elems;
-	size_t elemSize;
-	size_t size;
-	size_t cap;
-	float growRate;
-} Array;
-
-
-
-/* ----- PRIVATE CONSTANTS ----- */
-
-static const size_t DEFAULT_INIT_CAP = 16;
-
-static const float DEFAULT_GROW_RATE = 2.0f;
 
 
 
@@ -38,7 +19,7 @@ FoxArray * FoxArrayNew(
 		size_t initCap,
 		float growRate
 ) {
-	FoxArray * array = malloc(sizeof(Array));
+	FoxArray * array = malloc(sizeof(FoxArray));
 	FoxArrayInit(array, elemSize, initCap, growRate);
 
 	return array;
@@ -57,26 +38,24 @@ void FoxArrayInit(
 		size_t initCap,
 		float growRate
 ) {
-#define array ((Array *)array)
 	assert(array);
 	assert(elemSize > 0);
-	assert(growRate >= 0.0f);
+	assert(initCap > 0);
+	assert(growRate > 1.0f);
+	assert((size_t)(initCap * growRate) > initCap);
 
-	array->cap = (initCap > 0) ? initCap : DEFAULT_INIT_CAP;
-	array->growRate = (growRate > 1.0f) ? growRate : DEFAULT_GROW_RATE;
-	assert((size_t)(array->cap * array->growRate) > array->cap);
-
-	array->elems = malloc(elemSize * array->cap);
-	assert(array->elems);
 	array->elemSize = elemSize;
 	array->size = 0;
+	array->cap = initCap;
+	array->growRate = growRate;
+
+	array->elems = malloc(elemSize * initCap);
+	assert(array->elems);
 
 	return;
-#undef array
 }
 
 void FoxArrayDeinit(FoxArray * array) {
-#define array ((Array *)array)
 	assert(array);
 
 	free(array->elems);
@@ -85,32 +64,28 @@ void FoxArrayDeinit(FoxArray * array) {
 	array->growRate = 0.0f;
 
 	return;
-#undef array
 }
 
 inline size_t FoxArraySize(FoxArray * array) {
 	assert(array);
 
-	return ((Array *)array)->size;
+	return array->size;
 }
 
 void * FoxArrayIndex(
 		FoxArray * array,
 		unsigned int idx
 ) {
-#define array ((Array *)array)
 	assert(array);
 	assert(idx < array->size);
 
 	return array->elems + array->elemSize * idx;
-#undef array
 }
 
 void * FoxArrayInsert(
 		FoxArray * array,
 		unsigned int idx
 ) {
-#define array ((Array *)array)
 	assert(array);
 	assert(idx <= array->size);
 	size_t elemSize = array->elemSize;
@@ -138,7 +113,6 @@ void * FoxArrayInsert(
 	memset(targElem, 0, elemSize);
 
 	return targElem;
-#undef array
 }
 
 void FoxArrayRemove(
@@ -146,7 +120,6 @@ void FoxArrayRemove(
 		unsigned int idx,
 		void * elem
 ) {
-#define array ((Array *)array)
 	assert(array);
 	assert(idx < array->size);
 	size_t elemSize = array->elemSize;
@@ -167,5 +140,4 @@ void FoxArrayRemove(
 	}
 
 	return;
-#undef array
 }

@@ -4,11 +4,19 @@ SHELL = /bin/sh
 
 
 
+# Names.
+libname = foxutils
+dlibnamev0 = lib$(libname).so
+dlibnamev1 = $(dlibnamev0).1
+dlibnamev3 = $(dlibnamev1).0.0dev
+slibname = lib$(libname).a
+pubincname = foxutils
+
 # Build directories.
 prjdir = $(realpath $(CURDIR))
 srcdir = $(prjdir)/src
 incdir = $(prjdir)/include
-pubincdir = $(incdir)/foxutils
+pubincdir = $(incdir)/$(pubincname)
 builddir = $(prjdir)/build
 docdir = $(prjdir)/docs
 
@@ -18,18 +26,9 @@ exec_prefix = $(prefix)
 libdir = $(exec_prefix)/lib
 includedir = $(prefix)/include
 
-# Names.
-librootname = foxutils
-libname = $(librootname)
-dlibnamev0 = lib$(libname).so
-dlibnamev1 = $(dlibnamev0).1
-dlibnamev3 = $(dlibnamev1).0.0dev
-slibname = lib$(libname).a
-
 # Build files.
 src = $(wildcard $(srcdir)/*.c) $(wildcard $(srcdir)/foxutils/*.c)
 pubinc = $(wildcard $(pubincdir)/*.h)
-inc = $(pubinc) $(wildcard $(incdir)/*.h)
 obj = $(src:.c=.o)
 dlib = $(builddir)/$(dlibnamev3)
 slib = $(builddir)/$(slibname)
@@ -37,6 +36,7 @@ slib = $(builddir)/$(slibname)
 # Program and flag defaults.
 CFLAGS = -Wall -Wextra -O3
 ALL_CFLAGS = -I$(incdir) $(CFLAGS)
+LDFLAGS = --export-dynamic
 ALL_LDFLAGS = -shared -soname=$(dlibnamev1) $(LDFLAGS)
 ARFLAGS = -crs
 ALL_ARFLAGS = $(ARFLAGS)
@@ -93,7 +93,7 @@ install-symlinks: install-libs
 
 .PHONY: install-headers
 install-headers: $(pubinc)
-	$(INSTALL) -Dt $(DESTDIR)$(includedir)/$(librootname) -m 644 $(pubinc)
+	$(INSTALL) -Dt $(DESTDIR)$(includedir)/$(pubincname) -m 644 $(pubinc)
 
 .PHONY: uninstall
 uninstall: uninstall-libs uninstall-headers
@@ -109,4 +109,4 @@ uninstall-symlinks:
 
 .PHONY: uninstall-headers
 uninstall-headers:
-	rm -rf $(DESTDIR)$(includedir)/$(librootname)
+	rm -rf $(DESTDIR)$(includedir)/$(pubincname)

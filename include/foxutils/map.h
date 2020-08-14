@@ -6,7 +6,11 @@
  * @copyright This file is part of the libfoxutils C library which is released
  * under Apache 2.0. See file LICENSE for full license details.
  *
- * @brief This module provides an open hash table.
+ * @brief Open hash table implementation.
+ *
+ * Because this hash table is open, it can handle arbitrarily large load
+ * factors. The trade-off is that it's not as cache-friendly as a closed
+ * hash table.
  */
 #ifndef FOXUTILS_MAP_H
 #define FOXUTILS_MAP_H
@@ -14,28 +18,44 @@
 #include <stdbool.h>
 #include <stddef.h>
 
+#include "foxutils/array.h"
+
+
+
+/* ----- PUBLIC MACROS ----- */
+
+#define FOXMAP_DEF_INITSLOTS 64ul
+
+#define FOXMAP_DEF_GROWRATE 4.0f
+
+#define FOXMAP_DEF_LFTHRESH 3.0f
+
+#define FOXMAP_NULL_LFTHRESH -1.0f
+
 
 
 /* ----- PUBLIC TYPES ----- */
 
+/**
+ * @brief Open hash table.
+ *
+ * While it is possible to directly access this struct's members, using
+ * the functions provided by this module is preferred.
+ */
 typedef struct FoxMap {
-	unsigned char rawData[
-		sizeof(struct {
-			size_t keySize;
-			size_t elemSize;
-			size_t slotEntrySize;
-			size_t itemSize;
-			float growRate;
-			float lfThresh;
-			unsigned int slotIdxMask;
-			FoxArray slots;
-			FoxArray items;
-			unsigned int (* keyHash)(const void *);
-			int (* keyCompare)(const void *, const void *);
-			void (* keyCopy)(void *, const void *);
-			void (* keyDeinit)(void *);
-		})
-	];
+	FoxArray slots; /**< Map slots (or "buckets") which wrap keys. */
+	FoxArray items; /**< Map items which wrap elements. */
+	unsigned int (* keyHash)(const void *); /**< Key hashing function. */
+	int (* keyCompare)(const void *, const void *); /**< Key comparison
+																										function. */
+	void (* keyCopy)(void *, const void *); /**< Key duplication function. */
+	void (* keyDeinit)(void *); /**< Key de-initialization function. */
+	size_t keySize; /**< Size (in bytes) of each map key. */
+	size_t elemSize; /**< Size (in bytes) of each map element. */
+	float growRate; /**< Map growth rate. */
+	float lfThresh; /**< Load factor growth threshold. */
+	unsigned int slotIdxMask; /**< Binary mask applied to hashed keys to
+															get a slot index. */
 } FoxMap;
 
 

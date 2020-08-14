@@ -7,9 +7,17 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
-#include "foxutils/array.h"
+
 #include "foxutils/hash.h"
 #include "foxutils/map.h"
+
+
+
+/* ----- PRIVATE MACROS ----- */
+
+#define ItemSize(map) (sizeof(Item) + (map)->elemSize)
+
+#define SlotEntrySize(map) (sizeof(SlotEntry) + (map)->keySize)
 
 
 
@@ -26,32 +34,6 @@ typedef struct SlotEntry {
 	unsigned char key[];
 } SlotEntry;
 
-typedef struct Map {
-	size_t keySize;
-	size_t elemSize;
-	size_t slotEntrySize;
-	size_t itemSize;
-	float growRate;
-	float lfThresh;
-	unsigned int slotIdxMask;
-	FoxArray slots;
-	FoxArray items;
-	unsigned int (* keyHash)(const void *);
-	int (* keyCompare)(const void *, const void *);
-	void (* keyCopy)(void *, const void *);
-	void (* keyDeinit)(void *);
-} Map;
-
-
-
-/* ----- PRIVATE CONSTANTS ----- */
-
-static const size_t DEFAULT_INIT_SLOTS = 64;
-
-static const float DEFAULT_GROW_RATE = 4.0f;
-
-static const float DEFAULT_LF_THRESH = 3.0f;
-
 
 
 /* ----- PRIVATE FUNCTIONS ----- */
@@ -61,7 +43,7 @@ static const float DEFAULT_LF_THRESH = 3.0f;
  * "https://graphics.stanford.edu/~seander/bithacks.html#RoundUpPowerOf2".
  */
 static inline unsigned long RoundUpPowTwo(unsigned long val) {
-	unsigned long int result = val - 1;
+	unsigned long result = val - 1;
 	result |= result >> 1;
 	result |= result >> 2;
 	result |= result >> 4;
@@ -74,13 +56,13 @@ static inline unsigned long RoundUpPowTwo(unsigned long val) {
 	return result + 1;
 }
 
-static inline float LoadFactor(Map * map, int itemAddend) {
+static inline float LoadFactor(FoxMap * map, int itemAddend) {
 	return (float)(FoxArraySize(&map->items) + itemAddend)
 		/ (float)FoxArraySize(&map->slots);
 }
 
 static inline bool ItemLookup(
-		Map * map,
+		FoxMap * map,
 		const void * key,
 		unsigned int * slotIdx,
 		unsigned int * slotEntryIdx,
@@ -136,7 +118,7 @@ FoxMap * FoxMapNew(
 		void (* keyCopy)(void *, const void *),
 		void (* keyDeinit)(void *)
 ) {
-	FoxMap * map = malloc(sizeof(Map));
+	FoxMap * map = malloc(sizeof(FoxMap));
 	FoxMapInit(
 			map,
 			keySize,
@@ -172,52 +154,58 @@ void FoxMapInit(
 		void (* keyCopy)(void *, const void *),
 		void (* keyDeinit)(void *)
 ) {
-#define map ((Map *)map)
 	assert(map);
 	assert(keySize > 0);
 	assert(elemSize > 0);
-	assert(growRate >= 0.0f);
+	assert(initSlots > 1);
+	assert(growRate > 1.0f);
 
+	/* Calculate number of slots. */
+	size_t numSlots = RoundUpPowTwo(initSlots);
+	assert(RoundUpPowTwo((size_t)(numSlots * growRate)) > numSlots);
+
+	/* Initialize scalar members. */
 	map->keySize = keySize;
 	map->elemSize = elemSize;
-	map->slotEntrySize = sizeof(SlotEntry) + keySize;
-	map->itemSize = sizeof(Item) + elemSize;
+	map->growRate = growRate;
+	map->lfThresh = lfThresh;
+	map->slotIdxMask = numSlots - 1;
 
-	map->growRate = (growRate > 1.0f) ? growRate : DEFAULT_GROW_RATE;
-	map->lfThresh = (lfThresh == 0.0f) ? DEFAULT_LF_THRESH : lfThresh;
-	size_t cleanNumSlots = RoundUpPowTwo(
-			(initSlots > 0) ? initSlots : DEFAULT_INIT_SLOTS
-	);
-	assert(
-			RoundUpPowTwo(
-				(size_t)(cleanNumSlots * map->growRate)
-			) > cleanNumSlots
-	);
-
-	map->slotIdxMask = cleanNumSlots - 1;
-	FoxArray * slots = &map->slots;
-	FoxArrayInit(slots, sizeof(FoxArray), cleanNumSlots, 0.0f);
-	for (unsigned int idx = 0; idx < cleanNumSlots; idx++) {
-		FoxArrayInit(
-				FoxArrayInsert(slots, idx),
-				map->slotEntrySize,
-				4,
-				0.0f
-		);
-	}
-
-	FoxArrayInit(&map->items, map->itemSize, 0, 0.0f);
+	/* Initialize key functions. */
 	map->keyHash = keyHash;
 	map->keyCompare = keyCompare;
 	map->keyCopy = keyCopy;
 	map->keyDeinit = keyDeinit;
 
+	/* Initialize slots. */
+	FoxArray * slots = &map->slots;
+	FoxArrayInit(
+			slots,
+			sizeof(FoxArray),
+			numSlots,
+			FOXARRAY_DEF_GROWRATE
+	);
+	for (unsigned int idx = 0; idx < numSlots; idx++) {
+		FoxArrayInit(
+				FoxArrayInsert(slots, idx),
+				SlotEntrySize(map),
+				4,
+				FOXARRAY_DEF_GROWRATE
+		);
+	}
+
+	/* Initialize items. */
+	FoxArrayInit(
+			&map->items,
+			ItemSize(map),
+			FOXARRAY_DEF_INITCAP,
+			FOXARRAY_DEF_GROWRATE
+	);
+
 	return;
-#undef map
 }
 
 void FoxMapDeinit(FoxMap * map) {
-#define map ((Map *)map)
 	assert(map);
 
 	FoxArray * slots = &map->slots;
@@ -239,27 +227,25 @@ void FoxMapDeinit(FoxMap * map) {
 
 	map->slotIdxMask = 0;
 	map->lfThresh = map->growRate = 0.0f;
-	map->itemSize = map->slotEntrySize = map->elemSize = map->keySize = 0;
+	map->elemSize = map->keySize = 0;
 	map->keyDeinit = NULL;
 	map->keyCopy = NULL;
 	map->keyCompare = NULL;
 	map->keyHash = NULL;
 
 	return;
-#undef map
 }
 
 size_t FoxMapSize(FoxMap * map) {
 	assert(map);
 
-	return FoxArraySize(&((Map *)map)->items);
+	return FoxArraySize(&map->items);
 }
 
 void * FoxMapIndex(
 		FoxMap * map,
 		const void * key
 ) {
-#define map ((Map *)map)
 	assert(map);
 	assert(key);
 	void * elem = NULL;
@@ -271,14 +257,12 @@ void * FoxMapIndex(
 	}
 
 	return elem;
-#undef map
 }
 
 void * FoxMapInsert(
 		FoxMap * map,
 		const void * key
 ) {
-#define map ((Map *)map)
 	assert(map);
 	assert(key);
 
@@ -319,7 +303,6 @@ void * FoxMapInsert(
 	memset(item->elem, 0, map->elemSize);
 
 	return item->elem;
-#undef map
 }
 
 void FoxMapRemove(
@@ -327,7 +310,6 @@ void FoxMapRemove(
 		const void * key,
 		void * elem
 ) {
-#define map ((Map *)map)
 	assert(map);
 	assert(key);
 
@@ -356,7 +338,7 @@ void FoxMapRemove(
 		);
 
 		/* Move last item. */
-		memcpy(item, lastItem, map->itemSize);
+		memcpy(item, lastItem, ItemSize(map));
 
 		/* Update last slot entry. */
 		lastSlotEntry->itemIdx = itemIdx;
@@ -373,7 +355,7 @@ void FoxMapRemove(
 		Item * lastItem = FoxArrayIndex(items, lastSlotEntry->itemIdx);
 
 		/* Move last slot entry. */
-		memcpy(slotEntry, lastSlotEntry, map->slotEntrySize);
+		memcpy(slotEntry, lastSlotEntry, SlotEntrySize(map));
 
 		/* Update last item. */
 		lastItem->slotEntryIdx = slotEntryIdx;
@@ -381,36 +363,34 @@ void FoxMapRemove(
 	FoxArrayRemove(slot, lastSlotEntryIdx, NULL);
 
 	return;
-#undef map
 }
 
 float FoxMapLoadFactor(FoxMap * map) {
-	return LoadFactor((Map *)map, 0);
+	return LoadFactor(map, 0);
 }
 
 void FoxMapExpand(FoxMap * map) {
-#define old ((Map *)map)
 	assert(map);
 
-	FoxArray * slots = &old->slots;
+	FoxArray * slots = &map->slots;
 	size_t numSlots = FoxArraySize(slots);
-	FoxArray * items = &old->items;
+	FoxArray * items = &map->items;
 	size_t numItems = FoxArraySize(items);
-	size_t elemSize = old->elemSize;
+	size_t elemSize = map->elemSize;
 
 	/* Initialize new map. */
 	FoxMap new;
 	FoxMapInit(
 			&new,
-			old->keySize,
+			map->keySize,
 			elemSize,
-			(size_t)(numSlots * old->growRate),
-			old->growRate,
-			old->lfThresh,
-			old->keyHash,
-			old->keyCompare,
-			old->keyCopy,
-			old->keyDeinit
+			(size_t)(numSlots * map->growRate),
+			map->growRate,
+			map->lfThresh,
+			map->keyHash,
+			map->keyCompare,
+			map->keyCopy,
+			map->keyDeinit
 	);
 
 	/* Copy key-element pairs to new map. */
@@ -426,14 +406,13 @@ void FoxMapExpand(FoxMap * map) {
 		);
 	}
 
-	/* Deinitialize old map. */
+	/* De-initialize old map. */
 	FoxMapDeinit(map);
 
 	/* Set new map. */
 	*map = new;
 
 	return;
-#undef old
 }
 
 void FoxMapForEachPair(
@@ -441,7 +420,6 @@ void FoxMapForEachPair(
 		bool (* callback)(const void * key, void * elem, void * ctx),
 		void * ctx
 ) {
-#define map ((Map *)map)
 	assert(map);
 	assert(callback);
 
@@ -456,7 +434,6 @@ void FoxMapForEachPair(
 	}
 
 	return;
-#undef map
 }
 
 void FoxMapForEachElement(
@@ -464,7 +441,6 @@ void FoxMapForEachElement(
 		bool (* callback)(void * elem, void * ctx),
 		void * ctx
 ) {
-#define map ((Map *)map)
 	assert(map);
 	assert(callback);
 
@@ -476,7 +452,6 @@ void FoxMapForEachElement(
 	}
 
 	return;
-#undef map
 }
 
 void FoxMapForEachKey(
@@ -484,7 +459,6 @@ void FoxMapForEachKey(
 		bool (* callback)(const void * key, void * ctx),
 		void * ctx
 ) {
-#define map ((Map *)map)
 	assert(map);
 	assert(callback);
 
@@ -499,5 +473,4 @@ void FoxMapForEachKey(
 	}
 
 	return;
-#undef map
 }

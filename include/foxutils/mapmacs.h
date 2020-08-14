@@ -6,7 +6,7 @@
  * @copyright This file is part of the libfoxutils C library which is released
  * under Apache 2.0. See file LICENSE for full license details.
  *
- * @brief This module abstracts foxutils/map.h.
+ * @brief Convenience macros for foxutils/map.h.
  */
 #ifndef FOXUTILS_MAPMACS_H
 #define FOXUTILS_MAPMACS_H
@@ -24,9 +24,9 @@
 	FoxMapNew( \
 			sizeof(K), \
 			sizeof(E), \
-			0, \
-			0.0, \
-			0.0, \
+			FOXMAP_DEF_INITSLOTS, \
+			FOXMAP_DEF_GROWRATE, \
+			FOXMAP_DEF_LFTHRESH, \
 			NULL, \
 			NULL, \
 			NULL, \
@@ -44,8 +44,8 @@
 			sizeof(K), \
 			sizeof(E), \
 			(initSlots), \
-			0.0, \
-			0.0, \
+			FOXMAP_DEF_GROWRATE, \
+			FOXMAP_DEF_LFTHRESH, \
 			(unsigned int (*)(const void *))(keyHash), \
 			(int (*)(const void *, const void *))(keyCompare), \
 			NULL, \
@@ -90,9 +90,9 @@
 			(map), \
 			sizeof(K), \
 			sizeof(E), \
-			0, \
-			0.0, \
-			0.0, \
+			FOXMAP_DEF_INITSLOTS, \
+			FOXMAP_DEF_GROWRATE, \
+			FOXMAP_DEF_LFTHRESH, \
 			NULL, \
 			NULL, \
 			NULL, \
@@ -112,8 +112,8 @@
 			sizeof(K), \
 			sizeof(E), \
 			(initSlots), \
-			0.0, \
-			0.0, \
+			FOXMAP_DEF_GROWRATE, \
+			FOXMAP_DEF_LFTHRESH, \
 			(unsigned int (*)(const void *))(keyHash), \
 			(int (*)(const void *, const void *))(keyCompare), \
 			NULL, \
