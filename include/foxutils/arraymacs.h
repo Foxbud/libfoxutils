@@ -27,10 +27,7 @@
 	FoxArrayNew(sizeof(T), (initCap), (growRate))
 
 #define FoxArrayMFree(T, array) \
-	do { \
-		FoxArrayFree((array)); \
-		(array) = NULL; \
-	} while (0)
+		FoxArrayFree((array))
 
 #define FoxArrayMInit(T, array) \
 	FoxArrayInit((array), sizeof(T), FOXARRAY_DEF_INITCAP, FOXARRAY_DEF_GROWRATE)
@@ -50,8 +47,14 @@
 #define FoxArrayMIndex(T, array, idx) \
 	((T *)FoxArrayIndex((array), (idx)))
 
+#define FoxArrayMPeek(T, array) \
+	((T *)FoxArrayPeek((array)))
+
 #define FoxArrayMInsert(T, array, idx) \
 	((T *)FoxArrayInsert((array), (idx)))
+
+#define FoxArrayMPush(T, array) \
+	((T *)FoxArrayPush((array)))
 
 #define FoxArrayMRemove(T, array, idx) \
 	({ \
@@ -60,16 +63,10 @@
 		FoxArrayMRemove_elem; \
 	})
 
-#define FoxArrayMPush(T, array) \
-	((T *)FoxArrayInsert((array), FoxArraySize((array))))
-
-#define FoxArrayMPeek(T, array) \
-	((T *)FoxArrayIndex((array), FoxArraySize((array)) - 1))
-
 #define FoxArrayMPop(T, array) \
 	({ \
 		T FoxArrayMPop_elem; \
-		FoxArrayRemove((array), FoxArraySize((array)) - 1, &FoxArrayMPop_elem); \
+		FoxArrayRemove((array), &FoxArrayMPop_elem); \
 		FoxArrayMPop_elem; \
 	})
 

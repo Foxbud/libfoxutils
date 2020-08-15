@@ -76,10 +76,7 @@
 	)
 
 #define FoxMapMFree(K, E, map) \
-	do { \
-		FoxMapFree((map)); \
-		(map) = NULL; \
-	} while (0)
+	FoxMapFree((map))
 
 #define FoxMapMInit( \
 		K, \

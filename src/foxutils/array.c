@@ -66,7 +66,7 @@ void FoxArrayDeinit(FoxArray * array) {
 	return;
 }
 
-inline size_t FoxArraySize(FoxArray * array) {
+size_t FoxArraySize(FoxArray * array) {
 	assert(array);
 
 	return array->size;
@@ -80,6 +80,14 @@ void * FoxArrayIndex(
 	assert(idx < array->size);
 
 	return array->elems + array->elemSize * idx;
+}
+
+void * FoxArrayPeek(FoxArray * array) {
+	assert(array);
+	size_t numElems = array->size;
+	assert(numElems > 0);
+
+	return array->elems + array->elemSize * (numElems - 1);
 }
 
 void * FoxArrayInsert(
@@ -115,6 +123,12 @@ void * FoxArrayInsert(
 	return targElem;
 }
 
+void * FoxArrayPush(FoxArray * array) {
+	assert(array);
+
+	return FoxArrayInsert(array, array->size);
+}
+
 void FoxArrayRemove(
 		FoxArray * array,
 		unsigned int idx,
@@ -138,6 +152,17 @@ void FoxArrayRemove(
 				array->elemSize * (array->size + 1 - idx)
 		);
 	}
+
+	return;
+}
+
+void FoxArrayPop(
+		FoxArray * array,
+		void * elem
+) {
+	assert(array);
+
+	FoxArrayRemove(array, array->size - 1, elem);
 
 	return;
 }
