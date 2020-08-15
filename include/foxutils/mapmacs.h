@@ -6,7 +6,7 @@
  * @copyright This file is part of the libfoxutils C library which is released
  * under Apache 2.0. See file LICENSE for full license details.
  *
- * @brief Convenience macros for foxutils/map.h.
+ * @brief Convenience, function-like macros for foxutils/map.h.
  */
 #ifndef FOXUTILS_MAPMACS_H
 #define FOXUTILS_MAPMACS_H

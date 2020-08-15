@@ -6,7 +6,7 @@
  * @copyright This file is part of the libfoxutils C library which is released
  * under Apache 2.0. See file LICENSE for full license details.
  *
- * @brief Convenience macros for foxutils/array.h.
+ * @brief Convenience, function-like macros for foxutils/array.h.
  */
 #ifndef FOXUTILS_ARRAYMACS_H
 #define FOXUTILS_ARRAYMACS_H

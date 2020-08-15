@@ -37,10 +37,10 @@
 /* ----- PUBLIC TYPES ----- */
 
 /**
- * @brief Open hash table.
+ * @brief Open hash table data structure.
  *
- * While it is possible to directly access this struct's members, using
- * the functions provided by this module is preferred.
+ * @note While it is possible to directly access this struct's members, using
+ * the functions provided by the foxutils/map.h module is preferred.
  */
 typedef struct FoxMap {
 	FoxArray slots; /**< Map slots (or "buckets") which wrap keys. */
@@ -55,7 +55,7 @@ typedef struct FoxMap {
 	float growRate; /**< Map growth rate. */
 	float lfThresh; /**< Load factor growth threshold. */
 	unsigned int slotIdxMask; /**< Binary mask applied to hashed keys to
-															get a slot index. */
+															generate a slot index. */
 } FoxMap;
 
 

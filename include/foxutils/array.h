@@ -17,8 +17,14 @@
 
 /* ----- PUBLIC MACROS ----- */
 
+/**
+ * Dynamic array default initial capacity.
+ */
 #define FOXARRAY_DEF_INITCAP 16ul
 
+/**
+ * Dynamic array default growth rate.
+ */
 #define FOXARRAY_DEF_GROWRATE 2.0f
 
 
@@ -26,10 +32,10 @@
 /* ----- PUBLIC TYPES ----- */
 
 /**
- * @brief Dynamic array.
+ * @brief Dynamic array data structure.
  *
- * While it is possible to directly access this struct's members, using
- * the functions provided by this module is preferred.
+ * @note While it is possible to directly access this struct's members, using
+ * the functions provided by the foxutils/array.h module is preferred.
  */
 typedef struct FoxArray {
 	unsigned char * elems; /**< Underlying C array. */
@@ -38,6 +44,16 @@ typedef struct FoxArray {
 	size_t cap; /**< Total capacity of array (in elements, not bytes). */
 	float growRate; /**< Array growth rate. */
 } FoxArray;
+/**
+ * @example array.c
+ *
+ * This is an example of how to use the foxutils/array.h module.
+ *
+ * <br />
+ * Program output:
+ * <br />
+ * <tt>First 5 prime(s): 2 3 5 7 11.</tt>
+ */
 
 
 
@@ -104,32 +120,82 @@ void FoxArrayDeinit(FoxArray * array);
  * The size returned by this function is the total number of elements
  * currently in the array, **not** the total capacity of the array.
  *
- * @param[in] array Array to get size of.
+ * @param[in] array Array from which to get size.
  *
  * @return Size of array.
  */
 size_t FoxArraySize(FoxArray * array);
 
+/**
+ * Get an element in a dynamic array.
+ *
+ * @param[in] array Array from which to get element.
+ * @param[in] idx Index of element to get.
+ *
+ * @return Pointer to requested element.
+ */
 void * FoxArrayIndex(
 		FoxArray * array,
 		unsigned int idx
 );
 
+/**
+ * Get the last element in a dynamic array.
+ *
+ * @param[in] array Array from which to get element.
+ *
+ * @return Pointer to last element.
+ */
 void * FoxArrayPeek(FoxArray * array);
 
+/**
+ * Insert an element into a dynamic array.
+ *
+ * The new element will be inserted immediately *before* the element at
+ * the provided index. As a special case, if the provided index is equivalent
+ * to the size of the array, then the new element will be inserted immediately
+ * *after* the last element in the array.
+ *
+ * @param[in] array Array to insert element into.
+ * @param[in] idx Index to insert element at.
+ *
+ * @return Pointer to new, zero-initialized element.
+ */
 void * FoxArrayInsert(
 		FoxArray * array,
 		unsigned int idx
 );
 
+/**
+ * Insert an element at the end of a dynamic array.
+ *
+ * @param[in] array Array to insert element into.
+ *
+ * @return Pointer to new, zero-initialized element.
+ */
 void * FoxArrayPush(FoxArray * array);
 
+/**
+ * Remove an element from a dynamic array.
+ *
+ * @param[in] array Array to remove element from.
+ * @param[in] idx Index of element to remove.
+ *
+ * @param[out] elem Removed element (can be NULL).
+ */
 void FoxArrayRemove(
 		FoxArray * array,
 		unsigned int idx,
 		void * elem
 );
 
+/**
+ * Remove an element from the end of a dynamic array.
+ *
+ * @param[in] array Array to remove element from.
+ *
+ * @param[out] elem Removed element (can be NULL).
+ */
 void FoxArrayPop(
 		FoxArray * array,
 		void * elem
