@@ -1,13 +1,13 @@
 # Libfoxutils
 
-**Libfoxutils** is a utility library written in and for C, and it is released under the Apache 2.0 license.
+**Libfoxutils** is a utility library written in and for C released under the Apache 2.0 license.
 
 ## Features
 
 - Dynamic array (FoxArray).
 - Open hash table (FoxMap).
 - **Non**-cryptographic hashing functions.
-- Both static and dynamic libraries.
+- Both static and dynamic versions of library.
 
 ## Build + Installation
 
