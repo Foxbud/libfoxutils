@@ -28,8 +28,8 @@ $ make
 ### Library (32-bit)
 
 ```bash
-$ make libname=32-foxutils CFLAGS="-Wall -Wextra -O3 -m32 -fno-stack-protector" LDFLAGS="--export-dynamic -m elf_i386"
-# make libname=32-foxutils install-symlinks
+$ make CFLAGS="-Wall -Wextra -O3 -m32 -fno-stack-protector" LDFLAGS="--export-dynamic -m elf_i386"
+# make libdir='$(exec_prefix)/lib32' install-symlinks
 ```
 
 ### Headers

@@ -66,7 +66,7 @@
 #define FoxArrayMPop(T, array) \
 	({ \
 		T FoxArrayMPop_elem; \
-		FoxArrayRemove((array), &FoxArrayMPop_elem); \
+		FoxArrayPop((array), &FoxArrayMPop_elem); \
 		FoxArrayMPop_elem; \
 	})
 
