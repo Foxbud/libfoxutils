@@ -118,7 +118,7 @@ FoxMap * FoxMapNew(
 		void (* keyCopy)(void *, const void *),
 		void (* keyDeinit)(void *)
 ) {
-	FoxMap * map = malloc(sizeof(FoxMap));
+	FoxMap * map = calloc(1, sizeof(FoxMap));
 	FoxMapInit(
 			map,
 			keySize,
@@ -224,14 +224,7 @@ void FoxMapDeinit(FoxMap * map) {
 	}
 	FoxArrayDeinit(slots);
 	FoxArrayDeinit(&map->items);
-
-	map->slotIdxMask = 0;
-	map->lfThresh = map->growRate = 0.0f;
-	map->elemSize = map->keySize = 0;
-	map->keyDeinit = NULL;
-	map->keyCopy = NULL;
-	map->keyCompare = NULL;
-	map->keyHash = NULL;
+	*map = (FoxMap){0};
 
 	return;
 }
@@ -379,7 +372,7 @@ void FoxMapExpand(FoxMap * map) {
 	size_t elemSize = map->elemSize;
 
 	/* Initialize new map. */
-	FoxMap new;
+	FoxMap new = (FoxMap){0};
 	FoxMapInit(
 			&new,
 			map->keySize,

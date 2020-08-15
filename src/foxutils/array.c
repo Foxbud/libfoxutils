@@ -19,7 +19,7 @@ FoxArray * FoxArrayNew(
 		size_t initCap,
 		float growRate
 ) {
-	FoxArray * array = malloc(sizeof(FoxArray));
+	FoxArray * array = calloc(1, sizeof(FoxArray));
 	FoxArrayInit(array, elemSize, initCap, growRate);
 
 	return array;
@@ -59,9 +59,7 @@ void FoxArrayDeinit(FoxArray * array) {
 	assert(array);
 
 	free(array->elems);
-	array->elems = NULL;
-	array->elemSize = array->size = array->cap = 0;
-	array->growRate = 0.0f;
+	*array = (FoxArray){0};
 
 	return;
 }
