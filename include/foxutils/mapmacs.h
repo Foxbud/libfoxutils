@@ -148,6 +148,15 @@
 #define FoxMapMSize(K, E, map) \
 	FoxMapSize((map))
 
+#define FoxMapMEmpty(K, E, map) \
+	FoxMapEmpty((map))
+
+#define FoxMapMLoadFactor(K, E, map) \
+	FoxMapLoadFactor((map))
+
+#define FoxMapMExpand(K, E, map) \
+	FoxMapExpand((map))
+
 #define FoxMapMIndex(K, E, map, key) \
 	({ \
 		K FoxMapMIndex_key = (key); \
@@ -157,7 +166,7 @@
 #define FoxMapMInsert(K, E, map, key) \
 	({ \
 		K FoxMapMInsert_key = (key); \
-		((E *)FoxMapInsert((map), &FoxMapMInsert_key)); \
+		(E *)FoxMapInsert((map), &FoxMapMInsert_key); \
 	})
 
 #define FoxMapMRemove(K, E, map, key) \
@@ -167,12 +176,6 @@
 		FoxMapRemove((map), &FoxMapMRemove_key, &FoxMapMRemove_elem); \
 		FoxMapMRemove_elem; \
 	})
-
-#define FoxMapMLoadFactor(K, E, map) \
-	FoxMapLoadFactor((map))
-
-#define FoxMapMExpand(K, E, map) \
-	FoxMapExpand((map))
 
 #define FoxMapMForEachPair(K, E, map, callback, ctx) \
 	FoxMapForEachPair( \

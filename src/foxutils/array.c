@@ -70,6 +70,26 @@ size_t FoxArraySize(FoxArray * array) {
 	return array->size;
 }
 
+bool FoxArrayEmpty(FoxArray * array) {
+	assert(array);
+
+	return array->size == 0;
+}
+
+void FoxArrayEnsureCapacity(
+		FoxArray * array,
+		size_t cap
+) {
+	assert(array);
+
+	if (array->cap < cap) {
+		array->elems = realloc(array->elems, array->elemSize * cap);
+		assert(array->elems);
+	}
+
+	return;
+}
+
 void * FoxArrayIndex(
 		FoxArray * array,
 		unsigned int idx

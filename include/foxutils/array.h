@@ -11,6 +11,7 @@
 #ifndef FOXUTILS_ARRAY_H
 #define FOXUTILS_ARRAY_H
 
+#include <stdbool.h>
 #include <stddef.h>
 
 
@@ -125,6 +126,29 @@ void FoxArrayDeinit(FoxArray * array);
  * @return Size of array.
  */
 size_t FoxArraySize(FoxArray * array);
+
+/**
+ * Test whether or not a dynamic array is empty.
+ *
+ * @param[in] array Array to test.
+ *
+ * @return Whether or not array is empty.
+ */
+bool FoxArrayEmpty(FoxArray * array);
+
+/**
+ * Ensure that a dynamic array has a minimum capacity.
+ *
+ * If the dynamic array has less than the specified capacity, it will expand
+ * in order to meet it, otherwise nothing will happen.
+ * 
+ * @param[in] array Array to ensure the capacity of.
+ * @param[in] cap Capacity to ensure.
+ */
+void FoxArrayEnsureCapacity(
+		FoxArray * array,
+		size_t cap
+);
 
 /**
  * Get an element in a dynamic array.

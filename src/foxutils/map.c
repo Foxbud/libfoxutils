@@ -235,6 +235,62 @@ size_t FoxMapSize(FoxMap * map) {
 	return FoxArraySize(&map->items);
 }
 
+bool FoxMapEmpty(FoxMap * map) {
+	assert(map);
+
+	return FoxArraySize(&map->items) == 0;
+}
+
+float FoxMapLoadFactor(FoxMap * map) {
+	return LoadFactor(map, 0);
+}
+
+void FoxMapExpand(FoxMap * map) {
+	assert(map);
+
+	FoxArray * slots = &map->slots;
+	size_t numSlots = FoxArraySize(slots);
+	FoxArray * items = &map->items;
+	size_t numItems = FoxArraySize(items);
+	size_t elemSize = map->elemSize;
+
+	/* Initialize new map. */
+	FoxMap new = (FoxMap){0};
+	FoxMapInit(
+			&new,
+			map->keySize,
+			elemSize,
+			(size_t)(numSlots * map->growRate),
+			map->growRate,
+			map->lfThresh,
+			map->keyHash,
+			map->keyCompare,
+			map->keyCopy,
+			map->keyDeinit
+	);
+
+	/* Copy key-element pairs to new map. */
+	for (unsigned int idx = 0; idx < numItems; idx++) {
+		Item * item = FoxArrayIndex(items, idx);
+		FoxArray * slot = FoxArrayIndex(slots, item->slotIdx);
+		SlotEntry * slotEntry = FoxArrayIndex(slot, item->slotEntryIdx);
+		
+		memcpy(
+				FoxMapInsert(&new, slotEntry->key),
+				item->elem,
+				elemSize
+		);
+	}
+
+	/* De-initialize old map. */
+	FoxMapDeinit(map);
+
+	/* Set new map. */
+	*map = new;
+
+	return;
+}
+
 void * FoxMapIndex(
 		FoxMap * map,
 		const void * key
@@ -354,56 +410,6 @@ void FoxMapRemove(
 		lastItem->slotEntryIdx = slotEntryIdx;
 	}
 	FoxArrayRemove(slot, lastSlotEntryIdx, NULL);
-
-	return;
-}
-
-float FoxMapLoadFactor(FoxMap * map) {
-	return LoadFactor(map, 0);
-}
-
-void FoxMapExpand(FoxMap * map) {
-	assert(map);
-
-	FoxArray * slots = &map->slots;
-	size_t numSlots = FoxArraySize(slots);
-	FoxArray * items = &map->items;
-	size_t numItems = FoxArraySize(items);
-	size_t elemSize = map->elemSize;
-
-	/* Initialize new map. */
-	FoxMap new = (FoxMap){0};
-	FoxMapInit(
-			&new,
-			map->keySize,
-			elemSize,
-			(size_t)(numSlots * map->growRate),
-			map->growRate,
-			map->lfThresh,
-			map->keyHash,
-			map->keyCompare,
-			map->keyCopy,
-			map->keyDeinit
-	);
-
-	/* Copy key-element pairs to new map. */
-	for (unsigned int idx = 0; idx < numItems; idx++) {
-		Item * item = FoxArrayIndex(items, idx);
-		FoxArray * slot = FoxArrayIndex(slots, item->slotIdx);
-		SlotEntry * slotEntry = FoxArrayIndex(slot, item->slotEntryIdx);
-		
-		memcpy(
-				FoxMapInsert(&new, slotEntry->key),
-				item->elem,
-				elemSize
-		);
-	}
-
-	/* De-initialize old map. */
-	FoxMapDeinit(map);
-
-	/* Set new map. */
-	*map = new;
 
 	return;
 }

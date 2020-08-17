@@ -44,6 +44,12 @@
 #define FoxArrayMSize(T, array) \
 	FoxArraySize((array))
 
+#define FoxArrayMEmpty(T, array) \
+	FoxArrayEmpty((array))
+
+#define FoxArrayMEnsureCapacity(T, array, cap) \
+	FoxArrayEnsureCapacity((array), (cap))
+
 #define FoxArrayMIndex(T, array, idx) \
 	((T *)FoxArrayIndex((array), (idx)))
 

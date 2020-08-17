@@ -93,6 +93,12 @@ void FoxMapDeinit(FoxMap * map);
 
 size_t FoxMapSize(FoxMap * map);
 
+bool FoxMapEmpty(FoxMap * map);
+
+float FoxMapLoadFactor(FoxMap * map);
+
+void FoxMapExpand(FoxMap * map);
+
 void * FoxMapIndex(
 		FoxMap * map,
 		const void * key
@@ -108,10 +114,6 @@ void FoxMapRemove(
 		const void * key,
 		void * elem
 );
-
-float FoxMapLoadFactor(FoxMap * map);
-
-void FoxMapExpand(FoxMap * map);
 
 void FoxMapForEachPair(
 		FoxMap * map,
