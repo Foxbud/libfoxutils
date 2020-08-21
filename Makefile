@@ -36,8 +36,9 @@ slib = $(builddir)/$(slibname)
 # Program and flag defaults.
 CFLAGS = -Wall -Wextra -O3
 ALL_CFLAGS = -I$(incdir) $(CFLAGS)
-LDFLAGS = --export-dynamic
-ALL_LDFLAGS = -shared -soname=$(dlibnamev1) $(LDFLAGS)
+LD = $(CC)
+LDFLAGS = -rdynamic
+ALL_LDFLAGS = -shared -Wl,-soname,$(dlibnamev1) $(LDFLAGS)
 ARFLAGS = -crs
 ALL_ARFLAGS = $(ARFLAGS)
 DOC = doxygen

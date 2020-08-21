@@ -10,6 +10,7 @@
 
 #include "foxutils/hash.h"
 #include "foxutils/map.h"
+#include "foxutils/math.h"
 
 
 
@@ -37,24 +38,6 @@ typedef struct SlotEntry {
 
 
 /* ----- PRIVATE FUNCTIONS ----- */
-
-/* 
- * As described by Sean Eron Anderson of Standford University at
- * "https://graphics.stanford.edu/~seander/bithacks.html#RoundUpPowerOf2".
- */
-static inline unsigned long RoundUpPowTwo(unsigned long val) {
-	unsigned long result = val - 1;
-	result |= result >> 1;
-	result |= result >> 2;
-	result |= result >> 4;
-	result |= result >> 8;
-	result |= result >> 16;
-	#if __SIZEOF_LONG__ > 4
-		result |= result >> 32;
-	#endif
-
-	return result + 1;
-}
 
 static inline float LoadFactor(FoxMap * map, int itemAddend) {
 	return (float)(FoxArraySize(&map->items) + itemAddend)
@@ -157,12 +140,12 @@ void FoxMapInit(
 	assert(map);
 	assert(keySize > 0);
 	assert(elemSize > 0);
-	assert(initSlots > 1);
+	assert(initSlots <= (1ul << (sizeof(size_t) * 8 - 1)));
 	assert(growRate > 1.0f);
 
 	/* Calculate number of slots. */
-	size_t numSlots = RoundUpPowTwo(initSlots);
-	assert(RoundUpPowTwo((size_t)(numSlots * growRate)) > numSlots);
+	size_t numSlots = FoxRoundUpPow2ULong(initSlots);
+	assert((size_t)(numSlots * growRate) > numSlots);
 
 	/* Initialize scalar members. */
 	map->keySize = keySize;
