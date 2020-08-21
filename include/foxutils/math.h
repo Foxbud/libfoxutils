@@ -51,25 +51,9 @@
 
 /* ----- PUBLIC FUNCTIONS ----- */
 
-unsigned int FoxRoundUpMersenneUInt(unsigned int val);
+uint64_t FoxRoundUpMersenne(uint64_t val);
 
-unsigned long FoxRoundUpMersenneULong(unsigned long val);
-
-unsigned long long FoxRoundUpMersenneULongLong(unsigned long long val);
-
-uint32_t FoxRoundUpMersenneUInt32(uint32_t val);
-
-uint64_t FoxRoundUpMersenneUInt64(uint64_t val);
-
-unsigned int FoxRoundUpPow2UInt(unsigned int val);
-
-unsigned long FoxRoundUpPow2ULong(unsigned long val);
-
-unsigned long long FoxRoundUpPow2ULongLong(unsigned long long val);
-
-uint32_t FoxRoundUpPow2UInt32(uint32_t val);
-
-uint64_t FoxRoundUpPow2UInt64(uint64_t val);
+uint64_t FoxRoundUpPow2(uint64_t val);
 
 
 #endif /* FOXUTILS_MATH_H */

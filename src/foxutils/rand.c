@@ -170,7 +170,7 @@ uint64_t FoxRandUIntRange(
 	assert(max > min);
 
 	uint64_t range = max - min;
-	uint64_t mask = FoxRoundUpMersenneUInt64(range - 1);
+	uint64_t mask = FoxRoundUpMersenne(range - 1);
 	uint64_t result;
 	do {
 		result = PrimaryNext(rand->state) & mask;

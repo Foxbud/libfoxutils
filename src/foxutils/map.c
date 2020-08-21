@@ -144,7 +144,7 @@ void FoxMapInit(
 	assert(growRate > 1.0f);
 
 	/* Calculate number of slots. */
-	size_t numSlots = FoxRoundUpPow2ULong(initSlots);
+	size_t numSlots = FoxRoundUpPow2(initSlots);
 	assert((size_t)(numSlots * growRate) > numSlots);
 
 	/* Initialize scalar members. */
