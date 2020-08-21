@@ -83,7 +83,19 @@ bool FoxRandBool(FoxRand * rand);
 
 float FoxRandFloat(FoxRand * rand);
 
+float FoxRandFloatRange(
+		FoxRand * rand,
+		float min,
+		float max
+);
+
 double FoxRandDouble(FoxRand * rand);
+
+double FoxRandDoubleRange(
+		FoxRand * rand,
+		double min,
+		double max
+);
 
 
 

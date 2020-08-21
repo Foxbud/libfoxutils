@@ -209,8 +209,28 @@ float FoxRandFloat(FoxRand * rand) {
 	return (PrimaryNext(rand->state) >> (64 - 24)) * 0x1.0p-24f;
 }
 
+float FoxRandFloatRange(
+		FoxRand * rand,
+		float min,
+		float max
+) {
+	assert(max > min);
+
+	return FoxRandFloat(rand) * (max - min) + min;
+}
+
 double FoxRandDouble(FoxRand * rand) {
 	assert(rand);
 
 	return (PrimaryNext(rand->state) >> (64 - 53)) * 0x1.0p-53;
+}
+
+double FoxRandDoubleRange(
+		FoxRand * rand,
+		double min,
+		double max
+) {
+	assert(max > min);
+
+	return FoxRandDouble(rand) * (max - min) + min;
 }

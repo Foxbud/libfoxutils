@@ -4,8 +4,8 @@
  * This file is part of the libfoxutils C library which is released
  * under Apache 2.0. See file LICENSE for full license details.
  */
-#ifndef XORSHIFT_H
-#define XORSHIFT_H
+#ifndef PRIVATE_XORSHIFT_H
+#define PRIVATE_XORSHIFT_H
 
 
 
@@ -48,4 +48,4 @@
 
 
 
-#endif /* XORSHIFT_H */
+#endif /* PRIVATE_XORSHIFT_H */

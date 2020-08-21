@@ -31,6 +31,9 @@
 		(FoxMax_a > FoxMax_b) ? FoxMax_a : FoxMax_b; \
 	})
 
+#define FoxClamp(val, min, max) \
+	FoxMax(min, FoxMin(max, val))
+
 #define FoxRotR(val, num) \
 	({ \
 		typeof(val) FoxRotR_val = (val); \
