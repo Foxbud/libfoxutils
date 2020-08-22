@@ -20,34 +20,34 @@
 
 /* ----- PUBLIC FUNCTIONS ----- */
 
-uint32_t FoxHashMem(
+uint64_t FoxHashMem(
 		const void * mem,
 		size_t num
 );
 
-uint32_t FoxHashString(const char * str);
+uint64_t FoxHashString(const char * str);
 
-uint32_t FoxHashChar(char val);
+uint64_t FoxHashChar(char val);
 
-uint32_t FoxHashSChar(signed char val);
+uint64_t FoxHashSChar(signed char val);
 
-uint32_t FoxHashUChar(unsigned char val);
+uint64_t FoxHashUChar(unsigned char val);
 
-uint32_t FoxHashShort(short val);
+uint64_t FoxHashShort(short val);
 
-uint32_t FoxHashUShort(unsigned short val);
+uint64_t FoxHashUShort(unsigned short val);
 
-uint32_t FoxHashInt(int val);
+uint64_t FoxHashInt(int val);
 
-uint32_t FoxHashUInt(unsigned int val);
+uint64_t FoxHashUInt(unsigned int val);
 
-uint32_t FoxHashLong(long val);
+uint64_t FoxHashLong(long val);
 
-uint32_t FoxHashULong(unsigned long val);
+uint64_t FoxHashULong(unsigned long val);
 
-uint32_t FoxHashLongLong(long long val);
+uint64_t FoxHashLongLong(long long val);
 
-uint32_t FoxHashULongLong(unsigned long long val);
+uint64_t FoxHashULongLong(unsigned long long val);
 
 
 

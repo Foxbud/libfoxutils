@@ -27,7 +27,7 @@ void FoxRandSeed(
 uint64_t FoxRandUInt(FoxPRNG * prng) {
 	assert(prng);
 
-	return prng->vtable->next64(prng);
+	return prng->vtable->next(prng);
 }
 
 uint64_t FoxRandUIntRange(
@@ -41,7 +41,7 @@ uint64_t FoxRandUIntRange(
 	uint64_t range = max - min;
 	uint64_t mask = FoxRoundUpMersenne(range - 1);
 	uint64_t result;
-	uint64_t (* next)(FoxPRNG *) = prng->vtable->next64;
+	uint64_t (* next)(FoxPRNG *) = prng->vtable->next;
 	do {
 		result = next(prng) & mask;
 	} while (result >= range);
@@ -52,7 +52,7 @@ uint64_t FoxRandUIntRange(
 int64_t FoxRandInt(FoxPRNG * prng) {
 	assert(prng);
 
-	return (int64_t)prng->vtable->next64(prng);
+	return (int64_t)prng->vtable->next(prng);
 }
 
 int64_t FoxRandIntRange(
@@ -70,13 +70,13 @@ int64_t FoxRandIntRange(
 bool FoxRandBool(FoxPRNG * prng) {
 	assert(prng);
 
-	return (bool)(prng->vtable->next32(prng) >> 31);
+	return (bool)(prng->vtable->next(prng) >> 31);
 }
 
 float FoxRandFloat(FoxPRNG * prng) {
 	assert(prng);
 
-	return (prng->vtable->next32(prng) >> (32 - 24)) * 0x1.0p-24f;
+	return (prng->vtable->next(prng) >> (32 - 24)) * 0x1.0p-24f;
 }
 
 float FoxRandFloatRange(
@@ -92,7 +92,7 @@ float FoxRandFloatRange(
 double FoxRandDouble(FoxPRNG * prng) {
 	assert(prng);
 
-	return (prng->vtable->next64(prng) >> (64 - 53)) * 0x1.0p-53;
+	return (prng->vtable->next(prng) >> (64 - 53)) * 0x1.0p-53;
 }
 
 double FoxRandDoubleRange(

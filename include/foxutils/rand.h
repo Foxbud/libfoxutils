@@ -22,8 +22,7 @@ struct FoxPRNG;
 
 typedef struct FoxPRNGVTable {
 	void (* seed)(struct FoxPRNG * prng, uint64_t seed);
-	uint32_t (* next32)(struct FoxPRNG * prng);
-	uint64_t (* next64)(struct FoxPRNG * prng);
+	uint64_t (* next)(struct FoxPRNG * prng);
 } FoxPRNGVTable;
 
 typedef struct FoxPRNG {

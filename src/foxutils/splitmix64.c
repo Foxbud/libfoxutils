@@ -15,8 +15,7 @@
 
 static FoxPRNGVTable vtable = {
 	.seed = (void (*)(FoxPRNG *, uint64_t))FoxSplitMix64Seed,
-	.next32 = (uint32_t (*)(FoxPRNG *))FoxSplitMix64Next32,
-	.next64 = (uint64_t (*)(FoxPRNG *))FoxSplitMix64Next64
+	.next = (uint64_t (*)(FoxPRNG *))FoxSplitMix64Next
 };
 
 
@@ -66,11 +65,7 @@ void FoxSplitMix64Seed(
 	return;
 }
 
-uint32_t FoxSplitMix64Next32(FoxSplitMix64 * prng) {
-	return (uint32_t)(FoxSplitMix64Primitive(&prng->state) >> 32);
-}
-
-uint64_t FoxSplitMix64Next64(FoxSplitMix64 * prng) {
+uint64_t FoxSplitMix64Next(FoxSplitMix64 * prng) {
 	return FoxSplitMix64Primitive(&prng->state);
 }
 

@@ -45,9 +45,7 @@ void FoxSplitMix64Seed(
 		uint64_t seed
 );
 
-uint32_t FoxSplitMix64Next32(FoxSplitMix64 * prng);
-
-uint64_t FoxSplitMix64Next64(FoxSplitMix64 * prng);
+uint64_t FoxSplitMix64Next(FoxSplitMix64 * prng);
 
 uint64_t FoxSplitMix64Primitive(uint64_t * state);
 

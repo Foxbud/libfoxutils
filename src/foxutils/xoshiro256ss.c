@@ -35,8 +35,7 @@ const uint64_t FOXXOSHIRO256SS_JUMPPOLY_2_192[4] = {
 
 static FoxPRNGVTable vtable = {
 	.seed = (void (*)(FoxPRNG *, uint64_t))FoxXoshiro256SSSeed,
-	.next32 = (uint32_t (*)(FoxPRNG *))FoxXoshiro256SSNext32,
-	.next64 = (uint64_t (*)(FoxPRNG *))FoxXoshiro256SSNext64
+	.next = (uint64_t (*)(FoxPRNG *))FoxXoshiro256SSNext
 };
 
 
@@ -89,11 +88,7 @@ void FoxXoshiro256SSSeed(
 	return;
 }
 
-uint32_t FoxXoshiro256SSNext32(FoxXoshiro256SS * prng) {
-	return (uint32_t)(FoxXoshiro256SSPrimitive(prng->state) >> 32);
-}
-
-uint64_t FoxXoshiro256SSNext64(FoxXoshiro256SS * prng) {
+uint64_t FoxXoshiro256SSNext(FoxXoshiro256SS * prng) {
 	return FoxXoshiro256SSPrimitive(prng->state);
 }
 

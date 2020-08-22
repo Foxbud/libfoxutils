@@ -53,9 +53,7 @@ void FoxXoshiro256SSSeed(
 		uint64_t seed
 );
 
-uint32_t FoxXoshiro256SSNext32(FoxXoshiro256SS * prng);
-
-uint64_t FoxXoshiro256SSNext64(FoxXoshiro256SS * prng);
+uint64_t FoxXoshiro256SSNext(FoxXoshiro256SS * prng);
 
 void FoxXoshiro256SSJump(
 		FoxXoshiro256SS * prng,
