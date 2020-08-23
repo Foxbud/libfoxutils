@@ -18,33 +18,33 @@
 
 ### Standard (Library + Headers)
 
-```bash
+```
 $ make
 # make install
 ```
 
 ### Library
 
-```bash
+```
 $ make
 # make install-symlinks
 ```
 
 ### Library (32-bit)
 
-```bash
+```
 $ make CFLAGS="-Wall -Wextra -O3 -m32" LDFLAGS="-rdynamic -m32"
 # make libdir='$(exec_prefix)/lib32' install-symlinks
 ```
 
 ### Headers
 
-```bash
+```
 # make install-headers
 ```
 
 ### Documentation
 
-```bash
+```
 $ make docs
 ```
