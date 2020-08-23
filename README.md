@@ -28,7 +28,7 @@ $ make
 ### Library (32-bit)
 
 ```bash
-$ make CFLAGS="-Wall -Wextra -O3 -m32 -fno-stack-protector" LDFLAGS="--export-dynamic -m elf_i386"
+$ make CFLAGS="-Wall -Wextra -O3 -m32" LDFLAGS="-rdynamic -m32"
 # make libdir='$(exec_prefix)/lib32' install-symlinks
 ```
 
