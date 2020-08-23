@@ -8,6 +8,8 @@
  *
  * @brief SplitMix64 pseudo-random number generator.
  *
+ * @warning This generator is NOT suitable for cryptographic use.
+ *
  * This generator was designed by Sebastiano Vigna. See
  * http://prng.di.unimi.it/ for details.
  */

@@ -8,6 +8,8 @@
  *
  * @brief Xorshift64 pseudo-random number generator.
  *
+ * @warning This generator is NOT suitable for cryptographic use.
+ *
  * This generator was designed by George Marsaglia with parameters recommended
  * by Sebastiano Vigna. See http://vigna.di.unimi.it/ftp/papers/xorshift.pdf
  * for details.

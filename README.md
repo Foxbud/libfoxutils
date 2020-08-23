@@ -7,7 +7,12 @@
 - Dynamic array (FoxArray).
 - Open hash table (FoxMap).
 - **Non**-cryptographic hashing functions.
+- **Non**-cryptographic pseudo-random number generators and utilities.
 - Both static and dynamic versions of library.
+
+## Limitations
+
+- Requires support for [Statement Expressions](https://gcc.gnu.org/onlinedocs/gcc/Statement-Exprs.html).
 
 ## Build + Installation
 

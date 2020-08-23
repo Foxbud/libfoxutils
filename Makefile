@@ -8,7 +8,7 @@ SHELL = /bin/sh
 libname = foxutils
 dlibnamev0 = lib$(libname).so
 dlibnamev1 = $(dlibnamev0).1
-dlibnamev3 = $(dlibnamev1).0.0dev
+dlibnamev3 = $(dlibnamev1).0.0
 slibname = lib$(libname).a
 pubincname = foxutils
 
