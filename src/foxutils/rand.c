@@ -70,13 +70,13 @@ int64_t FoxRandIntRange(
 bool FoxRandBool(FoxPRNG * prng) {
 	assert(prng);
 
-	return (bool)(prng->vtable->next(prng) >> 31);
+	return (bool)(prng->vtable->next(prng) >> 63);
 }
 
 float FoxRandFloat(FoxPRNG * prng) {
 	assert(prng);
 
-	return (prng->vtable->next(prng) >> (32 - 24)) * 0x1.0p-24f;
+	return (prng->vtable->next(prng) >> (64 - 24)) * 0x1.0p-24f;
 }
 
 float FoxRandFloatRange(
