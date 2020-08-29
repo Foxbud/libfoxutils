@@ -33,7 +33,7 @@ $ make
 ### Library (32-bit)
 
 ```
-$ make CFLAGS="-Wall -Wextra -O3 -m32" LDFLAGS="-rdynamic -m32"
+$ make CFLAGS="-Wall -Wextra -O3 -fPIC -m32" LDFLAGS="-rdynamic -m32"
 # make libdir='$(exec_prefix)/lib32' install-symlinks
 ```
 

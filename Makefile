@@ -34,7 +34,7 @@ dlib = $(builddir)/$(dlibnamev3)
 slib = $(builddir)/$(slibname)
 
 # Program and flag defaults.
-CFLAGS = -Wall -Wextra -O3
+CFLAGS = -Wall -Wextra -O3 -fPIC
 ALL_CFLAGS = -I$(incdir) $(CFLAGS)
 LD = $(CC)
 LDFLAGS = -rdynamic
